@@ -1,3 +1,5 @@
+module Basics
+
 data Day : Type where
   Monday : Day
   Tuesday : Day
@@ -106,6 +108,7 @@ is_red : (c : Color) -> SFBool
 is_red (Primary Red) = True
 is_red _ = False
 
+public export
 data SFNat : Type where
   Z : SFNat
   S : SFNat -> SFNat
@@ -137,6 +140,7 @@ test_oddb1 = Refl
 test_oddb2 : oddb (S (S (S (S Z)))) = False
 test_oddb2 = Refl
 
+public export
 plus : (n : SFNat) -> (m : SFNat) -> SFNat
 plus Z m = m
 plus (S n') m = S (plus n' m)
@@ -145,7 +149,7 @@ mult : (n : SFNat) -> (m : SFNat) -> SFNat
 mult Z m = Z
 mult (S n') m = plus m (mult n' m)
 
-test_mult1 : Main.mult (S (S (S Z))) (S (S (S Z))) = (S (S (S (S (S (S (S (S (S Z)))))))))
+test_mult1 : Basics.mult (S (S (S Z))) (S (S (S Z))) = (S (S (S (S (S (S (S (S (S Z)))))))))
 test_mult1 = Refl
 
 minus : (n : SFNat) -> (m : SFNat) -> SFNat
@@ -161,10 +165,10 @@ factorial : SFNat -> SFNat
 factorial Z = S Z
 factorial (S n') = mult (S n') (factorial n')
 
-test_factorial1 : Main.factorial (S (S (S Z))) = (S (S (S (S (S (S Z))))))
+test_factorial1 : Basics.factorial (S (S (S Z))) = (S (S (S (S (S (S Z))))))
 test_factorial1 = Refl
 
-test_factorial2 : Main.factorial (S (S (S (S (S Z))))) = Main.mult (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S (S (S (S (S (S (S (S Z))))))))))))
+test_factorial2 : Basics.factorial (S (S (S (S (S Z))))) = Basics.mult (S (S (S (S (S (S (S (S (S (S Z)))))))))) (S (S (S (S (S (S (S (S (S (S (S (S Z))))))))))))
 test_factorial2 = Refl
 
 beq_nat : (n : SFNat) -> (m : SFNat) -> SFBool
@@ -198,25 +202,26 @@ test_blt_nat2 = Refl
 test_blt_nat3 : blt_nat (S (S (S (S Z)))) (S (S Z)) = False
 test_blt_nat3 = Refl
 
-plus_0_n : Main.plus Z n = n
+export
+plus_0_n : Basics.plus Z n = n
 plus_0_n = Refl
 
-plus_1_1 : Main.plus (S Z) n = S n
+plus_1_1 : Basics.plus (S Z) n = S n
 plus_1_1 = Refl
 
-mult_0_1 : Main.mult Z n = Z
+mult_0_1 : Basics.mult Z n = Z
 mult_0_1 = Refl
 
-plus_id_exercise : n = m -> m = o -> Main.plus n m = Main.plus m o
+plus_id_exercise : n = m -> m = o -> Basics.plus n m = Basics.plus m o
 plus_id_exercise Refl Refl = Refl
 
-mult_0_plus : Main.mult (Main.plus Z n) m = Main.mult n m
+mult_0_plus : Basics.mult (Basics.plus Z n) m = Basics.mult n m
 mult_0_plus = Refl
 
-mult_S_1 : m = S n -> Main.mult m (Main.plus (S Z) n) = Main.mult m m
+mult_S_1 : m = S n -> Basics.mult m (Basics.plus (S Z) n) = Basics.mult m m
 mult_S_1 Refl = Refl
 
-plus_1_neq_0 : beq_nat (Main.plus (S Z) n) Z = False
+plus_1_neq_0 : beq_nat (Basics.plus (S Z) n) Z = False
 plus_1_neq_0 = Refl
 
 negb_involutive : negb (negb b) = b
@@ -245,7 +250,7 @@ andb_true_elim2 {b = True} {c = False} Refl impossible
 andb_true_elim2 {b = False} {c = True} Refl impossible
 andb_true_elim2 {b = False} {c = False} Refl impossible
 
-zero_nbeq_plus_1 : beq_nat Z (Main.plus (S Z) n) = False
+zero_nbeq_plus_1 : beq_nat Z (Basics.plus (S Z) n) = False
 zero_nbeq_plus_1 = Refl
 
 identity_fn_applied_twice : {f : SFBool -> SFBool} -> f b = b -> f (f b) = b
@@ -269,8 +274,8 @@ incr (TwicePlusOne b) = Twice (incr b)
 
 bin_to_nat : Binary -> SFNat
 bin_to_nat BZ = Z
-bin_to_nat (Twice b) = Main.mult (S (S Z)) (bin_to_nat b)
-bin_to_nat (TwicePlusOne b) = Main.plus (Main.mult (S (S Z)) (bin_to_nat b)) (S Z)
+bin_to_nat (Twice b) = Basics.mult (S (S Z)) (bin_to_nat b)
+bin_to_nat (TwicePlusOne b) = Basics.plus (Basics.mult (S (S Z)) (bin_to_nat b)) (S Z)
 
 test_bin_incr1 : bin_to_nat (incr BZ) = S Z
 test_bin_incr1 = Refl
